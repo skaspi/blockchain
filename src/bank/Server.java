@@ -29,6 +29,8 @@ public class Server implements Watcher {
             synchronized (lock) {
                 if (zk.exists(root, true) == null) {
                     zk.create(root, new byte[]{}, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+                    zk.create(root + "/BLOCKS", new byte[]{}, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+                    zk.create(root + "/ORDERED", new byte[]{}, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
                 }
             }
         } catch (KeeperException | InterruptedException e) {
@@ -40,24 +42,29 @@ public class Server implements Watcher {
         ordered = false;
         Pair<Integer, Integer> pair = new Pair<>(ID, block_id++);
 
-        zk.create(root + "/", pair.toString().getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE,
+        zk.create(root + "/BLOCKS/", pair.toString().getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE,
                 CreateMode.PERSISTENT_SEQUENTIAL);
     }
 
-
     private void totalOrder() throws KeeperException, InterruptedException {
         synchronized (lock) {
-            List<String> children = zk.getChildren(root, true);
+            List<String> children = zk.getChildren(root + "/BLOCKS", true);
             Collections.sort(children);
+            zk.setData(root + "/ORDERED", children.toString().getBytes(), -1);
             ordered = true;
         }
     }
 
     public void process(WatchedEvent watchedEvent) {
+        System.out.println(watchedEvent.getPath() + "," + watchedEvent.getPath());
         try {
             totalOrder();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+//    public boolean isAlive(){
+//        return zk.getState().isConnected();
+//    }
 }
