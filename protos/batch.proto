@@ -1,0 +1,18 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+package protos;
+
+message TransactionBatch {
+    message Transaction {
+        int32 transactionID= 1;
+        int32 accountNumber = 2;
+        int32 changeInSum = 3;
+    }
+    int32 batchID = 1;
+    int32 senderID = 2;
+    repeated Transaction transactions = 3;
+}
+
+service BatchSender {
+    rpc SendBatch (TransactionBatch) returns (google.protobuf.Empty) {}
+}
