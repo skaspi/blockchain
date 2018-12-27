@@ -11,15 +11,18 @@ public class Transaction {
         this.balanceChange = balanceChange;
     }
 
-    public int getClientID() {
-        return clientID;
-    }
+    int getClientID() { return clientID; }
 
-    public int getBalanceChange() {
+    int getBalanceChange() {
         return balanceChange;
     }
 
-    public int getTransactionID() {
+    int getTransactionID() {
         return transactionID;
+    }
+
+    @Override
+    public String toString(){
+      return transactionID + "," + clientID + "," + balanceChange;
     }
 }

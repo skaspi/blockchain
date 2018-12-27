@@ -11,7 +11,8 @@ import java.util.List;
 public class BatchReceiver extends BatchSenderGrpc.BatchSenderImplBase {
     private io.grpc.Server server;
     private Server bankServer;
-    public BatchReceiver(int port, Server bankServer) {
+
+    BatchReceiver(int port, Server bankServer) {
         this.bankServer = bankServer;
         try {
             server = ServerBuilder.forPort(port)
@@ -23,15 +24,18 @@ public class BatchReceiver extends BatchSenderGrpc.BatchSenderImplBase {
             System.exit(1);
         }
     }
-    void shutdown() { server.shutdown();}
+
+    void shutdown() {
+        server.shutdown();
+    }
 
     @Override
     public void sendBatch(protos.Batch.TransactionBatch request,
                           io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
 
-         com.google.protobuf.Empty rep = com.google.protobuf.Empty.getDefaultInstance();
-         responseObserver.onNext(rep);
-        bankServer.processReceivedBatch(request.getBatchID(), request.getSenderID() ,buildTransactionsFromMessage(request.getTransactionsList()));
+        com.google.protobuf.Empty rep = com.google.protobuf.Empty.getDefaultInstance();
+        responseObserver.onNext(rep);
+        bankServer.processReceivedBatch(request.getBatchID(), request.getSenderID(), buildTransactionsFromMessage(request.getTransactionsList()));
     }
 
     private List<Transaction> buildTransactionsFromMessage(List<Batch.TransactionBatch.Transaction> grpcTransactionsList) {
@@ -41,6 +45,4 @@ public class BatchReceiver extends BatchSenderGrpc.BatchSenderImplBase {
         }
         return transactions;
     }
-
-
 }

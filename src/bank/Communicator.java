@@ -11,7 +11,8 @@ public class Communicator {
     private BatchSenderGrpc.BatchSenderFutureStub stub;
     private ManagedChannel channel;
     private int serverID;
-    public Communicator(String host, int port) {
+
+    Communicator(String host, int port) {
         channel = ManagedChannelBuilder
             .forAddress(host, port)
             .usePlaintext()
@@ -24,7 +25,7 @@ public class Communicator {
         channel.shutdown();
     }
 
-    public void sendBatch(List<Transaction> transactions, int batchID, int senderID) {
+    void sendBatch(List<Transaction> transactions, int batchID, int senderID) {
         sendBatchAction(transactions, batchID, senderID);
     }
 

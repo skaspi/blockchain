@@ -1,27 +1,55 @@
 package bank;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 class ServerData {
-    private HashMap<Integer, Integer> client_base;
-    private TransactionBuffer batch_buffer;
-    private HashMap<Integer,Transaction> ISC_buffer;
+    private HashMap<Integer, Integer> client_base = new HashMap<>();
+    private TransactionBuffer batch_buffer = new TransactionBuffer();
+    private HashMap<Integer, List<Transaction>> ISC_buffer = new HashMap<>();
+    private int transactionCounter = 0;
 
-    ServerData() {
-        client_base = new HashMap<>();
-        batch_buffer = new TransactionBuffer();
-        ISC_buffer = new HashMap<>();
+    void addBatch(int senderID, List<Transaction> transactionList) {
+        for (Transaction t : transactionList) {
+            if(!ISC_buffer.containsKey(senderID)){
+               ISC_buffer.put(senderID, new ArrayList<>());
+            }
+            ISC_buffer.get(senderID).add(t);
+        }
     }
 
     void userCreate(int id) {
-        client_base.put(id, 100);
+        if (!client_base.containsKey(id))
+            client_base.put(id, 100);
     }
 
     void updateBalance(int id, int amount) {
         int new_amount = client_base.get(id) + amount;
         if (new_amount >= 0) {
-            client_base.put(id, new_amount);
             batch_buffer.accept(id, new_amount);
+            client_base.replace(id, new_amount);  //TODO: After Zookeeper trigger watch
         }
     }
+
+    List<Transaction> getTransactions(int batch_counter) {
+        List<Transaction> transactionList = new ArrayList<>();
+        for (int key : batch_buffer.getUserBuffer().keySet()) {
+            transactionList.add(new Transaction(batch_counter, batch_buffer.getUserBuffer().get(key), key));
+        }
+        return transactionList;
+    }
+
+    void clearTransaction() {
+        batch_buffer.clear();
+    }
+
+    void print(){
+        System.out.println("HERE" + ISC_buffer.toString());
+    }
+
+    void flush(int serverID){
+        ISC_buffer.remove(serverID);
+    }
+
 }
