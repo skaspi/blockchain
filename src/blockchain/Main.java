@@ -1,6 +1,6 @@
 package blockchain;
 
-import bank.Server;
+import bank.server.Server;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -15,8 +15,8 @@ public class Main {
         try {
             while (true) {
                 Scanner reader = new Scanner(System.in);
-
                 int clientID = reader.nextInt();
+                reader.useDelimiter(",|\\s+");
                 int changeBalance = reader.nextInt();
                 server.addTransaction(clientID, changeBalance);
             }

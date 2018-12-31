@@ -1,4 +1,6 @@
-package bank;
+package bank.communication;
+
+import org.apache.commons.codec.digest.DigestUtils;
 
 public class Transaction {
     private int transactionID;
@@ -11,18 +13,18 @@ public class Transaction {
         this.balanceChange = balanceChange;
     }
 
-    int getClientID() { return clientID; }
+    public int getClientID() { return clientID; }
 
-    int getBalanceChange() {
+    public int getBalanceChange() {
         return balanceChange;
     }
 
-    int getTransactionID() {
+    public int getTransactionID() {
         return transactionID;
     }
 
     @Override
-    public String toString(){
-      return transactionID + "," + clientID + "," + balanceChange;
+    public String toString() {
+        return ("<" + DigestUtils.sha1Hex(String.valueOf(transactionID)).substring(35) + "," + clientID + "," + balanceChange + ">");
     }
 }
