@@ -5,6 +5,7 @@ import bank.server_communication.Communicator;
 import bank.server_communication.Transaction;
 import bank.server_data.ServerData;
 import org.apache.zookeeper.*;
+import org.apache.zookeeper.data.Stat;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -45,6 +46,7 @@ public class Server implements Watcher {
     private final String blocks_path = root + "/BLOCKS";
     private final String servers_path = root + "/SERVERS";
     private ServerData db = new ServerData();
+    private Stat dummy = new Stat();
     private List<Communicator> communicators = new ArrayList<>();
     private Set<String> connected_servers = new HashSet<>();
 
@@ -105,13 +107,12 @@ public class Server implements Watcher {
         zk.create(blocks_path + "/", String.valueOf(batch).getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT_SEQUENTIAL);
     }
 
-    private void updateServers(String path){
+    private void updateServers(String path) {
         try {
             Set<String> children = new HashSet<>(zk.getChildren(path, true));
             if (children.size() > connected_servers.size()) {
                 connected_servers.addAll(children);
-            }
-            else {
+            } else {
                 Set<String> difference = new HashSet<>(connected_servers);
                 difference.removeAll(children);
                 connected_servers = new HashSet<>(children);
@@ -136,13 +137,21 @@ public class Server implements Watcher {
 
         if (path.equals(servers_path)) {
             updateServers(path);
-        }
-        else {
-            //TODO : Blockchain logic here...
+        } else if (path.equals(blocks_path)) {
+            try {
+                List<String> children = new ArrayList<>(zk.getChildren(path, true));
+                for (String s : children) {
+                    String data = new String(zk.getData(blocks_path + "/" + s, true, dummy));
+                    System.out.println(data + '|');
+                }
+            } catch (KeeperException | InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public void process(WatchedEvent watchedEvent) {
+        System.out.println(watchedEvent.getPath() + watchedEvent.getType() + watchedEvent.getState());
         processRequest(watchedEvent.getPath());
     }
 

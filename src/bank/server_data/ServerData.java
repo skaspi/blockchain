@@ -10,7 +10,6 @@ public class ServerData {
     private HashMap<Integer, Integer> client_base = new HashMap<>();
     private TransactionBuffer batch_buffer = new TransactionBuffer();
     private HashMap<Integer, List<Transaction>> ISC_buffer = new HashMap<>();
-    private int transactionCounter = 0;
 
     public void addBatch(int senderID, List<Transaction> transactionList) {
         for (Transaction t : transactionList) {
