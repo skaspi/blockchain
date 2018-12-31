@@ -1,4 +1,4 @@
-package bank;
+package bank.communication;
 
 public class Transaction {
     private int transactionID;
@@ -11,13 +11,13 @@ public class Transaction {
         this.balanceChange = balanceChange;
     }
 
-    int getClientID() { return clientID; }
+    public int getClientID() { return clientID; }
 
-    int getBalanceChange() {
+    public int getBalanceChange() {
         return balanceChange;
     }
 
-    int getTransactionID() {
+    public int getTransactionID() {
         return transactionID;
     }
 

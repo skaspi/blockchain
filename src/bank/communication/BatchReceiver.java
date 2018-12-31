@@ -1,5 +1,6 @@
-package bank;
+package bank.communication;
 
+import bank.server.Server;
 import io.grpc.ServerBuilder;
 import protos.Batch;
 import protos.BatchSenderGrpc;
@@ -12,7 +13,7 @@ public class BatchReceiver extends BatchSenderGrpc.BatchSenderImplBase {
     private io.grpc.Server server;
     private Server bankServer;
 
-    BatchReceiver(int port, Server bankServer) {
+    public BatchReceiver(int port, Server bankServer) {
         this.bankServer = bankServer;
         try {
             server = ServerBuilder.forPort(port)
@@ -35,7 +36,7 @@ public class BatchReceiver extends BatchSenderGrpc.BatchSenderImplBase {
 
         com.google.protobuf.Empty rep = com.google.protobuf.Empty.getDefaultInstance();
         responseObserver.onNext(rep);
-        bankServer.processReceivedBatch(request.getBatchID(), request.getSenderID(), buildTransactionsFromMessage(request.getTransactionsList()));
+        bankServer.processReceivedBatch(request.getSenderID(), buildTransactionsFromMessage(request.getTransactionsList()));
     }
 
     private List<Transaction> buildTransactionsFromMessage(List<Batch.TransactionBatch.Transaction> grpcTransactionsList) {
