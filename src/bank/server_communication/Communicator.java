@@ -1,4 +1,4 @@
-package bank;
+package bank.server_communication;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -12,7 +12,7 @@ public class Communicator {
     private ManagedChannel channel;
     private int serverID;
 
-    Communicator(String host, int port) {
+    public Communicator(String host, int port) {
         channel = ManagedChannelBuilder
             .forAddress(host, port)
             .usePlaintext()
@@ -25,7 +25,7 @@ public class Communicator {
         channel.shutdown();
     }
 
-    void sendBatch(List<Transaction> transactions, int batchID, int senderID) {
+    public void sendBatch(List<Transaction> transactions, int batchID, int senderID) {
         sendBatchAction(transactions, batchID, senderID);
     }
 

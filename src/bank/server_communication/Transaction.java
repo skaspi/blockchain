@@ -1,4 +1,4 @@
-package bank;
+package bank.server_communication;
 
 public class Transaction {
     private int transactionID;

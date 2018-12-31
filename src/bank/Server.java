@@ -1,5 +1,9 @@
 package bank;
 
+import bank.server_communication.BatchReceiver;
+import bank.server_communication.Communicator;
+import bank.server_communication.Transaction;
+import bank.server_data.ServerData;
 import org.apache.zookeeper.*;
 
 import java.io.IOException;
@@ -78,7 +82,7 @@ public class Server implements Watcher {
         db.userCreate(clientID);
         db.updateBalance(clientID, changeBalance);
         if (isBatchThreshold()) {
-            sendToServers(db.getTransactions(), batch_counter, ID);
+            sendToServers(db.getTransactions(batch_counter), batch_counter, ID);
             addBlock(batch_counter++);
             db.clearTransaction();
         }
@@ -90,7 +94,7 @@ public class Server implements Watcher {
         return (transaction_counter > 1 && (transaction_counter % 3) == 0);
     }
 
-    private void sendToServers(List<Transaction> transactions, int batchID, int senderID) {
+    private void sendToServers(List<bank.server_communication.Transaction> transactions, int batchID, int senderID) {
         for (Communicator communicator : communicators) {
             communicator.sendBatch(transactions, batchID, senderID);
         }
@@ -142,7 +146,7 @@ public class Server implements Watcher {
         processRequest(watchedEvent.getPath());
     }
 
-    void processReceivedBatch(int batchID, int senderID, List<Transaction> transactions) {
+    public void processReceivedBatch(int batchID, int senderID, List<Transaction> transactions) {
         db.addBatch(senderID, transactions);
         db.print();
     }

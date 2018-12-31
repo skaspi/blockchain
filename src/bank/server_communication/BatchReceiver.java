@@ -1,5 +1,6 @@
-package bank;
+package bank.server_communication;
 
+import bank.Server;
 import io.grpc.ServerBuilder;
 import protos.Batch;
 import protos.BatchSenderGrpc;
@@ -12,7 +13,7 @@ public class BatchReceiver extends BatchSenderGrpc.BatchSenderImplBase {
     private io.grpc.Server server;
     private Server bankServer;
 
-    BatchReceiver(int port, Server bankServer) {
+    public BatchReceiver(int port, Server bankServer) {
         this.bankServer = bankServer;
         try {
             server = ServerBuilder.forPort(port)

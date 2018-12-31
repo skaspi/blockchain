@@ -1,4 +1,4 @@
-package bank;
+package bank.server_data;
 
 import java.util.LinkedHashMap;
 
