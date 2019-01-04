@@ -33,6 +33,9 @@ public class Server implements Watcher {
         }
     }
 
+    private final long BATCH_TIMEOUT_IN_MILISECONDS = 5000;
+    private final int MAX_TRANSACTIONS_IN_BATCH = 10;
+
     private ZooKeeper zk;
     private BatchID batch;
     private ServerData db;
@@ -41,14 +44,30 @@ public class Server implements Watcher {
     private int batch_counter = 0;
     private int transaction_counter = 0;
     private int running_block = 0;
+    private int transactionsiInCurrentBlock = 0;
     private final String root = "/ROOT";
     private final String blocks_path = root + "/BLOCKS";
     private final String servers_path = root + "/SERVERS";
 
     private Stat state = new Stat();
+    private Timer batchTimer = new Timer("batchTimer");
     private List<Transaction> final_chain = new ArrayList<>();
     private List<Communicator> communicators = new ArrayList<>();
     private Set<String> connected_servers = new HashSet<>();
+
+    private TimerTask sendBatchTask = new TimerTask() {
+        @Override
+        public void run() {
+            transactionsiInCurrentBlock = 0;
+            sendToServers(db.getTransactions(batch_counter, ID), batch_counter, ID);
+            try {
+                addBlock(batch_counter++);
+            } catch (KeeperException | InterruptedException e) {
+                e.printStackTrace();
+            }
+            db.clearTransactions();
+        }
+    };
 
     public Server(String zkHost, List<InetSocketAddress> addresses, int id, int listenerPort) {
         ID = id;
@@ -84,11 +103,14 @@ public class Server implements Watcher {
         db.userCreate(clientID);
         db.tryUpdateBatch(clientID, changeBalance);
         transaction_counter++;
-        if (isBatchThreshold()) {
-            sendToServers(db.getTransactions(batch_counter, ID), batch_counter, ID);
-            addBlock(batch_counter++);
-            db.clearTransactions();
+        transactionsiInCurrentBlock++;
+        batchTimer.cancel();
+        if (transactionsiInCurrentBlock < MAX_TRANSACTIONS_IN_BATCH) {
+            batchTimer.schedule(sendBatchTask, BATCH_TIMEOUT_IN_MILISECONDS);
+            return;
         }
+        sendBatchTask.run();
+
     }
 
 
