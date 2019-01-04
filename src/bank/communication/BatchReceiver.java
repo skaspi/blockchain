@@ -37,6 +37,7 @@ public class BatchReceiver extends BatchSenderGrpc.BatchSenderImplBase {
         com.google.protobuf.Empty rep = com.google.protobuf.Empty.getDefaultInstance();
         responseObserver.onNext(rep);
         bankServer.processReceivedBatch(request.getSenderID(), buildTransactionsFromMessage(request.getTransactionsList()));
+        responseObserver.onCompleted();
     }
 
     private List<Transaction> buildTransactionsFromMessage(List<Batch.TransactionBatch.Transaction> grpcTransactionsList) {

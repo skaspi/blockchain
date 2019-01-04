@@ -86,7 +86,6 @@ public class Server implements Watcher {
         transaction_counter++;
         if (isBatchThreshold()) {
             sendToServers(db.getTransactions(batch_counter, ID), batch_counter, ID);
-            TimeUnit.SECONDS.sleep(1);  // TODO: Replace with something more meaningful ...
             addBlock(batch_counter++);
             db.clearTransactions();
         }
