@@ -5,6 +5,7 @@ import bank.communication.Communicator;
 import bank.communication.Transaction;
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
+import protos.Batch;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -23,6 +24,18 @@ public class Server implements Watcher {
             batchNumber = batchRunningNumber;
         }
 
+        @Override
+        public boolean equals(Object object) {
+            if (object == this) {
+                return true;
+            }
+            if (!(object instanceof BatchID)) {
+                return false;
+            }
+            BatchID batchID = (BatchID) object;
+            return (serverID == batchID.serverID) && (batchNumber == batchID.batchNumber);
+        }
+
         void setBatchNumber(int num) {
             batchNumber = num;
         }
@@ -33,7 +46,7 @@ public class Server implements Watcher {
         }
     }
 
-    private final long BATCH_TIMEOUT_IN_MILISECONDS = 5000;
+    private final long BATCH_TIMEOUT_IN_MILISECONDS = 3000;
     private final int MAX_TRANSACTIONS_IN_BATCH = 10;
 
     private ZooKeeper zk;
@@ -55,19 +68,22 @@ public class Server implements Watcher {
     private List<Communicator> communicators = new ArrayList<>();
     private Set<String> connected_servers = new HashSet<>();
 
-    private TimerTask sendBatchTask = new TimerTask() {
-        @Override
-        public void run() {
-            transactionsiInCurrentBlock = 0;
-            sendToServers(db.getTransactions(batch_counter, ID), batch_counter, ID);
-            try {
-                addBlock(batch_counter++);
-            } catch (KeeperException | InterruptedException e) {
-                e.printStackTrace();
+
+    private TimerTask createNewBatchTask() {
+        return new TimerTask() {
+            @Override
+            public void run() {
+                transactionsiInCurrentBlock = 0;
+                sendToServers(db.getTransactions(batch_counter, ID), batch_counter, ID);
+                try {
+                    addBlock(batch_counter++);
+                } catch (KeeperException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+                db.clearTransactions();
             }
-            db.clearTransactions();
-        }
-    };
+        };
+    }
 
     public Server(String zkHost, List<InetSocketAddress> addresses, int id, int listenerPort) {
         ID = id;
@@ -105,17 +121,12 @@ public class Server implements Watcher {
         transaction_counter++;
         transactionsiInCurrentBlock++;
         batchTimer.cancel();
+        batchTimer = new Timer("batchTimer");
         if (transactionsiInCurrentBlock < MAX_TRANSACTIONS_IN_BATCH) {
-            batchTimer.schedule(sendBatchTask, BATCH_TIMEOUT_IN_MILISECONDS);
+            batchTimer.schedule(createNewBatchTask(), BATCH_TIMEOUT_IN_MILISECONDS);
             return;
         }
-        sendBatchTask.run();
-
-    }
-
-
-    private boolean isBatchThreshold() {
-        return ((transaction_counter % 3) == 0);
+        createNewBatchTask().run();
     }
 
     private void sendToServers(List<bank.communication.Transaction> transactions, int batchID, int senderID) {
@@ -163,15 +174,30 @@ public class Server implements Watcher {
                 true, null)).split(",");
 
         int server_id = Integer.parseInt(tokens[0]);
-        int batch_id = Integer.parseInt(tokens[1]);
+        int batchRunningNumber = Integer.parseInt(tokens[1]);
+        BatchID batchID = new BatchID(server_id, batchRunningNumber);
+        if (!db.getBlocksWaitingToBeReceived().isEmpty()) { //There is a previous ZK block that hasn't been received in gRPC, so can't "deliver" it
+            db.addWaitingBlock(batchID);
+            return;
+        }
+        if (!deliverTransactions(server_id, batchRunningNumber)) { //Couldn't find the required batch in the ISC buffer so adding to the waiting blocks
+            db.addWaitingBlock(batchID);
+
+        }
+    }
+
+    private boolean deliverTransactions(int server_id, int batchRunningNumber) {
+        boolean flag = false;
         for (Transaction t : db.getServerTransactions(server_id)) {
-            if (t.getTransactionID() == batch_id) {
+            if (t.getTransactionID() == batchRunningNumber) {
                 if (testAndUpdate(t.getClientID(), t.getBalanceChange())) {
                     final_chain.add(new Transaction(running_block++, t.getBalanceChange(), t.getClientID()));
+                    flag = true;
+                    System.out.println(final_chain);
                 }
             }
         }
-        System.out.println(final_chain);
+        return flag;
     }
 
     private void processRequest(String path) {
@@ -196,5 +222,26 @@ public class Server implements Watcher {
         processRequest(watchedEvent.getPath());
     }
 
-    public void processReceivedBatch(int senderID, List<Transaction> transactions) {db.addBatch(senderID, transactions);}
+    public void processReceivedBatch(int senderID, List<Transaction> transactions, int batchRunningNumber) {
+        db.addBatch(senderID, transactions);
+        BatchID receivedBatchID = new BatchID(senderID, batchRunningNumber);
+        List<BatchID> blocksWaitingToBeReceived = db.getBlocksWaitingToBeReceived();
+        if (blocksWaitingToBeReceived.isEmpty()) {
+            return;
+        }
+        if (blocksWaitingToBeReceived.get(0).equals(receivedBatchID)) { // The first (earliest) block is the same as the received so we can "deliver" it
+            deliverTransactions(senderID, batchRunningNumber);
+            System.out.println("found waiting batch: " + receivedBatchID);
+            blocksWaitingToBeReceived.remove(0);
+            ListIterator<BatchID> iter = blocksWaitingToBeReceived.listIterator();
+            while (iter.hasNext()) {  // Go over all the other waiting blocks and try to deliver them
+                BatchID nextWaitingBatchID = iter.next();
+                if (!deliverTransactions(nextWaitingBatchID.serverID, nextWaitingBatchID.batchNumber)) {
+                    break;  // If couldn't deliver (not in the ISC buffer) then stop
+                }
+                iter.remove();
+                System.out.println("found another batch: " + nextWaitingBatchID);
+            }
+        }
+    }
 }

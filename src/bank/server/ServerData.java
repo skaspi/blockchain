@@ -10,6 +10,7 @@ class ServerData {
     private HashMap<Integer, Integer> client_base = new HashMap<>();
     private TransactionBuffer batch_buffer = new TransactionBuffer();
     private HashMap<Integer, List<Transaction>> ISC_buffer = new HashMap<>();
+    private List<Server.BatchID> blocksWaitingToBeReceived = new ArrayList<>();
 
     ServerData(int own_id) {
         ISC_buffer.put(own_id, new ArrayList<>());
@@ -54,11 +55,19 @@ class ServerData {
 
     void update_amount(int id, int amount) { client_base.put(id, amount); }
 
-    List<Transaction> getServerTransactions(int id) { return ISC_buffer.get(id); }
+    List<Transaction> getServerTransactions(int id) { return ISC_buffer.getOrDefault(id, new ArrayList<>()); }
+
+    public List<Server.BatchID> getBlocksWaitingToBeReceived() {
+        return blocksWaitingToBeReceived;
+    }
 
     void clearTransactions() {
         batch_buffer.clear();
     }
 
     void flush(int serverID) { ISC_buffer.remove(serverID); }
+
+    public void addWaitingBlock(Server.BatchID batchID) {
+        blocksWaitingToBeReceived.add(batchID);
+    }
 }
