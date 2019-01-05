@@ -7,10 +7,9 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-
         int serverID = Integer.parseInt(args[0]);
         Configuration.config(serverID);
-        Server server = new Server("127.0.0.1:2181", Configuration.addresses, Integer.parseInt(args[0]), Configuration.LISTENER_PORT + serverID);
+        Server server = new Server("172.22.0.4:2181", Configuration.addresses, Integer.parseInt(args[0]), Configuration.LISTENER_PORT + serverID);
 
         try {
             while (true) {

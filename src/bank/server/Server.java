@@ -9,7 +9,6 @@ import org.apache.zookeeper.data.Stat;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 
 public class Server implements Watcher {
@@ -23,18 +22,41 @@ public class Server implements Watcher {
             batchNumber = batchRunningNumber;
         }
 
-        void setBatchNumber(int num) {
-            batchNumber = num;
+        @Override
+        public boolean equals(Object object) {
+            if (object == this) {
+                return true;
+            }
+            if ((object == null) || (object.getClass() != this.getClass()))
+                return false;
+            BatchID batchID = (BatchID) object;
+            return (serverID == batchID.serverID) && (batchNumber == batchID.batchNumber);
+        }
+
+        @Override
+        public int hashCode(){
+            int hash = 7;
+            hash = 31 * hash + serverID;
+            hash = 31 * hash + batchNumber;
+            return hash;
         }
 
         @Override
         public String toString() {
             return serverID + "," + batchNumber;
         }
+
+        void setBatchNumber(int num) {
+            batchNumber = num;
+        }
     }
 
-    private final long BATCH_TIMEOUT_IN_MILISECONDS = 5000;
-    private final int MAX_TRANSACTIONS_IN_BATCH = 10;
+    private static final String root = "/ROOT";
+    private static final String blocks_path = root + "/BLOCKS";
+    private static final String servers_path = root + "/SERVERS";
+
+    private static final int MAX_TRANSACTIONS_IN_BATCH = 10;
+    private static final long BATCH_TIMEOUT_IN_MILLISECONDS = 3000;
 
     private ZooKeeper zk;
     private BatchID batch;
@@ -42,12 +64,8 @@ public class Server implements Watcher {
     private final Integer ID;
     private BatchReceiver receiver;
     private int batch_counter = 0;
-    private int transaction_counter = 0;
     private int running_block = 0;
-    private int transactionsiInCurrentBlock = 0;
-    private final String root = "/ROOT";
-    private final String blocks_path = root + "/BLOCKS";
-    private final String servers_path = root + "/SERVERS";
+    private int transactionsInCurrentBlock = 0;
 
     private Stat state = new Stat();
     private Timer batchTimer = new Timer("batchTimer");
@@ -55,26 +73,30 @@ public class Server implements Watcher {
     private List<Communicator> communicators = new ArrayList<>();
     private Set<String> connected_servers = new HashSet<>();
 
-    private TimerTask sendBatchTask = new TimerTask() {
-        @Override
-        public void run() {
-            transactionsiInCurrentBlock = 0;
-            sendToServers(db.getTransactions(batch_counter, ID), batch_counter, ID);
-            try {
-                addBlock(batch_counter++);
-            } catch (KeeperException | InterruptedException e) {
-                e.printStackTrace();
+
+    private TimerTask createNewBatchTask() {
+        return new TimerTask() {
+            @Override
+            public void run() {
+                transactionsInCurrentBlock = 0;
+                sendToServers(db.getTransactions(batch_counter, ID), batch_counter, ID);
+                try {
+                    addBlock(batch_counter++);
+                } catch (KeeperException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+                db.clearTransactions();
             }
-            db.clearTransactions();
-        }
-    };
+        };
+    }
 
     public Server(String zkHost, List<InetSocketAddress> addresses, int id, int listenerPort) {
         ID = id;
         try {
             zk = new ZooKeeper(zkHost, 3000, this);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Network error...Terminating the server!");
+            System.exit(1);
         }
         try {
             if (zk.exists(root, true) == null) {
@@ -99,23 +121,19 @@ public class Server implements Watcher {
         receiver = new BatchReceiver(listenerPort, this);
     }
 
-    public void addTransaction(int clientID, int changeBalance) throws KeeperException, InterruptedException {
+    public void addTransaction(int clientID, int changeBalance) {
         db.userCreate(clientID);
-        db.tryUpdateBatch(clientID, changeBalance);
-        transaction_counter++;
-        transactionsiInCurrentBlock++;
-        batchTimer.cancel();
-        if (transactionsiInCurrentBlock < MAX_TRANSACTIONS_IN_BATCH) {
-            batchTimer.schedule(sendBatchTask, BATCH_TIMEOUT_IN_MILISECONDS);
+        if(!db.tryUpdateBatch(clientID, changeBalance)){
             return;
         }
-        sendBatchTask.run();
-
-    }
-
-
-    private boolean isBatchThreshold() {
-        return ((transaction_counter % 3) == 0);
+        transactionsInCurrentBlock++;
+        batchTimer.cancel();
+        batchTimer = new Timer("batchTimer");
+        if (transactionsInCurrentBlock < MAX_TRANSACTIONS_IN_BATCH) {
+            batchTimer.schedule(createNewBatchTask(), BATCH_TIMEOUT_IN_MILLISECONDS);
+            return;
+        }
+        createNewBatchTask().run();
     }
 
     private void sendToServers(List<bank.communication.Transaction> transactions, int batchID, int senderID) {
@@ -163,15 +181,30 @@ public class Server implements Watcher {
                 true, null)).split(",");
 
         int server_id = Integer.parseInt(tokens[0]);
-        int batch_id = Integer.parseInt(tokens[1]);
+        int batchRunningNumber = Integer.parseInt(tokens[1]);
+        BatchID batchID = new BatchID(server_id, batchRunningNumber);
+        if (!db.getBlocksWaitingToBeReceived().isEmpty()) {
+            db.addWaitingBlock(batchID);
+            return;
+        }
+        if (!deliverTransactions(server_id, batchRunningNumber)) {
+            db.addWaitingBlock(batchID);
+
+        }
+    }
+
+    private boolean deliverTransactions(int server_id, int batchRunningNumber) {
+        boolean flag = false;
         for (Transaction t : db.getServerTransactions(server_id)) {
-            if (t.getTransactionID() == batch_id) {
+            if (t.getTransactionID() == batchRunningNumber) {
                 if (testAndUpdate(t.getClientID(), t.getBalanceChange())) {
                     final_chain.add(new Transaction(running_block++, t.getBalanceChange(), t.getClientID()));
+                    flag = true;
+                    System.out.println(final_chain);
                 }
             }
         }
-        System.out.println(final_chain);
+        return flag;
     }
 
     private void processRequest(String path) {
@@ -196,5 +229,24 @@ public class Server implements Watcher {
         processRequest(watchedEvent.getPath());
     }
 
-    public void processReceivedBatch(int senderID, List<Transaction> transactions) {db.addBatch(senderID, transactions);}
+    public void processReceivedBatch(int senderID, List<Transaction> transactions, int batchRunningNumber) {
+        db.addBatch(senderID, transactions);
+        BatchID receivedBatchID = new BatchID(senderID, batchRunningNumber);
+        List<BatchID> blocksWaitingToBeReceived = db.getBlocksWaitingToBeReceived();
+        if (blocksWaitingToBeReceived.isEmpty()) {
+            return;
+        }
+        if (blocksWaitingToBeReceived.get(0).equals(receivedBatchID)) {
+            deliverTransactions(senderID, batchRunningNumber);
+            blocksWaitingToBeReceived.remove(0);
+            ListIterator<BatchID> iter = blocksWaitingToBeReceived.listIterator();
+            while (iter.hasNext()) {
+                BatchID nextWaitingBatchID = iter.next();
+                if (!deliverTransactions(nextWaitingBatchID.serverID, nextWaitingBatchID.batchNumber)) {
+                    break;
+                }
+                iter.remove();
+            }
+        }
+    }
 }
