@@ -10,6 +10,7 @@ class ServerData {
     private HashMap<Integer, Integer> client_base = new HashMap<>();
     private TransactionBuffer batch_buffer = new TransactionBuffer();
     private HashMap<Integer, List<Transaction>> ISC_buffer = new HashMap<>();
+    private List<Server.BatchID> blocksWaitingToBeReceived = new ArrayList<>();
 
     ServerData(int own_id) {
         ISC_buffer.put(own_id, new ArrayList<>());
@@ -29,10 +30,12 @@ class ServerData {
             client_base.put(id, 0);
     }
 
-    void tryUpdateBatch(int id, int amount) {
+    boolean tryUpdateBatch(int id, int amount) {
         if (client_base.get(id) + amount >= 0) {
             batch_buffer.accept(id, amount);
+            return true;
         }
+        return false;
     }
 
     List<Transaction> getTransactions(int batch_counter, int own_id) {
@@ -45,20 +48,25 @@ class ServerData {
         return transactionList;
     }
 
-    // TODO: Remove after debugging
-    String print() { return client_base.toString();  }
-
-    boolean query_key(int id) { return client_base.containsKey(id);    }
-
-    int query_amount(int id) { return client_base.get(id); }
-
-    void update_amount(int id, int amount) { client_base.put(id, amount); }
-
-    List<Transaction> getServerTransactions(int id) { return ISC_buffer.get(id); }
-
     void clearTransactions() {
         batch_buffer.clear();
     }
 
+    int query_amount(int id) { return client_base.get(id); }
+
     void flush(int serverID) { ISC_buffer.remove(serverID); }
+
+    boolean query_key(int id) { return client_base.containsKey(id); }
+
+    void update_amount(int id, int amount) { client_base.put(id, amount); }
+
+    void addWaitingBlock(Server.BatchID batchID) {
+        blocksWaitingToBeReceived.add(batchID);
+    }
+
+    List<Server.BatchID> getBlocksWaitingToBeReceived() {
+        return blocksWaitingToBeReceived;
+    }
+
+    List<Transaction> getServerTransactions(int id) { return ISC_buffer.getOrDefault(id, new ArrayList<>()); }
 }

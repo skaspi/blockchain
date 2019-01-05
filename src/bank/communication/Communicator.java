@@ -8,7 +8,7 @@ import protos.BatchSenderGrpc;
 import java.util.List;
 
 public class Communicator {
-    private BatchSenderGrpc.BatchSenderBlockingStub stub;
+    private BatchSenderGrpc.BatchSenderFutureStub stub;
     private ManagedChannel channel;
     private int serverID;
 
@@ -17,7 +17,7 @@ public class Communicator {
             .forAddress(host, port)
             .usePlaintext()
             .build();
-        stub = BatchSenderGrpc.newBlockingStub(channel);
+        stub = BatchSenderGrpc.newFutureStub(channel);
         this.serverID = serverID;
     }
     public void shutdown()
