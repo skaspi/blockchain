@@ -1,5 +1,6 @@
 syntax = "proto3";
 import "google/protobuf/empty.proto";
+import "google/api/annotations.proto";
 package protos;
 
 message TransactionBatch {
@@ -7,12 +8,30 @@ message TransactionBatch {
         int32 transactionID= 1;
         int32 accountNumber = 2;
         int32 changeInSum = 3;
+        int32 a = 4;
     }
     int32 batchID = 1;
     int32 senderID = 2;
     repeated Transaction transactions = 3;
 }
 
+message ClientBalanceQuery {
+    int32 clientID = 1;
+}
+
+message ClientBalanceResponse {
+    int32 balance = 1;
+}
+
 service BatchSender {
     rpc SendBatch (TransactionBatch) returns (google.protobuf.Empty) {}
+}
+
+service ClientRESTInterface {
+    rpc getBalance(ClientBalanceQuery) returns (ClientBalanceResponse) {
+        option (google.api.http) = { get: "/v1/payload/{clientID}" };
+    }
+    rpc Ping(google.protobuf.Empty) returns (google.protobuf.Empty) {
+        option (google.api.http) = { get: "/v1/ping" };
+    }
 }

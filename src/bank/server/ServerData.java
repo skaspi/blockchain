@@ -52,7 +52,7 @@ class ServerData {
         batch_buffer.clear();
     }
 
-    int query_amount(int id) { return client_base.get(id); }
+    int query_amount(int id) { return client_base.getOrDefault(id, 0); }
 
     void flush(int serverID) { ISC_buffer.remove(serverID); }
 

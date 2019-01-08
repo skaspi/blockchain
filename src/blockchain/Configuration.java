@@ -7,6 +7,7 @@ import java.util.List;
 class Configuration {
     private final static String LOCAL_HOST = "127.0.0.1";
     static final int LISTENER_PORT = 12345;
+    static final int REST_LISTENER_PORT = 54321;
     private final static int NUMBER_OF_SERVERS = 30;
     static final ArrayList<InetSocketAddress> addresses = new ArrayList<>();
 

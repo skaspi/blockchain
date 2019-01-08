@@ -2,6 +2,7 @@ package bank.server;
 
 import bank.communication.BatchReceiver;
 import bank.communication.Communicator;
+import bank.communication.RESTReceiver;
 import bank.communication.Transaction;
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
@@ -12,6 +13,7 @@ import java.util.*;
 
 
 public class Server implements Watcher {
+
 
     class BatchID {
         int serverID;
@@ -63,6 +65,7 @@ public class Server implements Watcher {
     private ServerData db;
     private final Integer ID;
     private BatchReceiver receiver;
+    private RESTReceiver RESTreceiver;
     private int batch_counter = 0;
     private int running_block = 0;
     private int transaction_counter = 0;
@@ -91,7 +94,7 @@ public class Server implements Watcher {
         };
     }
 
-    public Server(String zkHost, List<InetSocketAddress> addresses, int id, int listenerPort) {
+    public Server(String zkHost, List<InetSocketAddress> addresses, int id, int listenerPort, int RESTListenerPort) {
         ID = id;
         try {
             zk = new ZooKeeper(zkHost, 3000, this);
@@ -120,6 +123,7 @@ public class Server implements Watcher {
         db = new ServerData(ID);
         batch = new BatchID(ID, 0);
         receiver = new BatchReceiver(listenerPort, this);
+        RESTreceiver = new RESTReceiver(RESTListenerPort, this);
     }
 
     public void addTransaction(int clientID, int changeBalance) {
@@ -250,5 +254,9 @@ public class Server implements Watcher {
                 iter.remove();
             }
         }
+    }
+
+    public int getClientBalance(int clientID) {
+        return db.query_amount(clientID);
     }
 }

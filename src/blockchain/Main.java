@@ -1,6 +1,9 @@
 package blockchain;
 
 import bank.server.Server;
+import io.grpc.Channel;
+import protos.BatchSenderGrpc;
+import protos.ClientRESTInterfaceGrpc;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -10,7 +13,11 @@ public class Main {
 
         int serverID = Integer.parseInt(args[0]);
         Configuration.config(serverID);
-        Server server = new Server("127.0.0.1:2181", Configuration.addresses, Integer.parseInt(args[0]), Configuration.LISTENER_PORT + serverID);
+        Server server = new Server("127.0.0.1:2181",
+                Configuration.addresses,
+                Integer.parseInt(args[0]),
+                Configuration.LISTENER_PORT + serverID,
+                Configuration.REST_LISTENER_PORT + serverID);
 
         try {
             while (true) {

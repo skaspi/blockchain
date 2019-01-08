@@ -165,6 +165,11 @@ public final class Batch {
        * <code>int32 changeInSum = 3;</code>
        */
       int getChangeInSum();
+
+      /**
+       * <code>int32 a = 4;</code>
+       */
+      int getA();
     }
     /**
      * Protobuf type {@code protos.TransactionBatch.Transaction}
@@ -182,6 +187,7 @@ public final class Batch {
         transactionID_ = 0;
         accountNumber_ = 0;
         changeInSum_ = 0;
+        a_ = 0;
       }
 
       @java.lang.Override
@@ -228,6 +234,11 @@ public final class Batch {
               case 24: {
 
                 changeInSum_ = input.readInt32();
+                break;
+              }
+              case 32: {
+
+                a_ = input.readInt32();
                 break;
               }
             }
@@ -281,6 +292,15 @@ public final class Batch {
         return changeInSum_;
       }
 
+      public static final int A_FIELD_NUMBER = 4;
+      private int a_;
+      /**
+       * <code>int32 a = 4;</code>
+       */
+      public int getA() {
+        return a_;
+      }
+
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
@@ -302,6 +322,9 @@ public final class Batch {
         if (changeInSum_ != 0) {
           output.writeInt32(3, changeInSum_);
         }
+        if (a_ != 0) {
+          output.writeInt32(4, a_);
+        }
         unknownFields.writeTo(output);
       }
 
@@ -321,6 +344,10 @@ public final class Batch {
         if (changeInSum_ != 0) {
           size += com.google.protobuf.CodedOutputStream
             .computeInt32Size(3, changeInSum_);
+        }
+        if (a_ != 0) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt32Size(4, a_);
         }
         size += unknownFields.getSerializedSize();
         memoizedSize = size;
@@ -344,6 +371,8 @@ public final class Batch {
             == other.getAccountNumber());
         result = result && (getChangeInSum()
             == other.getChangeInSum());
+        result = result && (getA()
+            == other.getA());
         result = result && unknownFields.equals(other.unknownFields);
         return result;
       }
@@ -361,6 +390,8 @@ public final class Batch {
         hash = (53 * hash) + getAccountNumber();
         hash = (37 * hash) + CHANGEINSUM_FIELD_NUMBER;
         hash = (53 * hash) + getChangeInSum();
+        hash = (37 * hash) + A_FIELD_NUMBER;
+        hash = (53 * hash) + getA();
         hash = (29 * hash) + unknownFields.hashCode();
         memoizedHashCode = hash;
         return hash;
@@ -496,6 +527,8 @@ public final class Batch {
 
           changeInSum_ = 0;
 
+          a_ = 0;
+
           return this;
         }
 
@@ -521,6 +554,7 @@ public final class Batch {
           result.transactionID_ = transactionID_;
           result.accountNumber_ = accountNumber_;
           result.changeInSum_ = changeInSum_;
+          result.a_ = a_;
           onBuilt();
           return result;
         }
@@ -570,6 +604,9 @@ public final class Batch {
           }
           if (other.getChangeInSum() != 0) {
             setChangeInSum(other.getChangeInSum());
+          }
+          if (other.getA() != 0) {
+            setA(other.getA());
           }
           this.mergeUnknownFields(other.unknownFields);
           onChanged();
@@ -672,6 +709,32 @@ public final class Batch {
         public Builder clearChangeInSum() {
           
           changeInSum_ = 0;
+          onChanged();
+          return this;
+        }
+
+        private int a_ ;
+        /**
+         * <code>int32 a = 4;</code>
+         */
+        public int getA() {
+          return a_;
+        }
+        /**
+         * <code>int32 a = 4;</code>
+         */
+        public Builder setA(int value) {
+          
+          a_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>int32 a = 4;</code>
+         */
+        public Builder clearA() {
+          
+          a_ = 0;
           onChanged();
           return this;
         }
@@ -1477,6 +1540,908 @@ public final class Batch {
 
   }
 
+  public interface ClientBalanceQueryOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:protos.ClientBalanceQuery)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>int32 clientID = 1;</code>
+     */
+    int getClientID();
+  }
+  /**
+   * Protobuf type {@code protos.ClientBalanceQuery}
+   */
+  public  static final class ClientBalanceQuery extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:protos.ClientBalanceQuery)
+      ClientBalanceQueryOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use ClientBalanceQuery.newBuilder() to construct.
+    private ClientBalanceQuery(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private ClientBalanceQuery() {
+      clientID_ = 0;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private ClientBalanceQuery(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+
+              clientID_ = input.readInt32();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return protos.Batch.internal_static_protos_ClientBalanceQuery_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return protos.Batch.internal_static_protos_ClientBalanceQuery_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              protos.Batch.ClientBalanceQuery.class, protos.Batch.ClientBalanceQuery.Builder.class);
+    }
+
+    public static final int CLIENTID_FIELD_NUMBER = 1;
+    private int clientID_;
+    /**
+     * <code>int32 clientID = 1;</code>
+     */
+    public int getClientID() {
+      return clientID_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (clientID_ != 0) {
+        output.writeInt32(1, clientID_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (clientID_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, clientID_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof protos.Batch.ClientBalanceQuery)) {
+        return super.equals(obj);
+      }
+      protos.Batch.ClientBalanceQuery other = (protos.Batch.ClientBalanceQuery) obj;
+
+      boolean result = true;
+      result = result && (getClientID()
+          == other.getClientID());
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + CLIENTID_FIELD_NUMBER;
+      hash = (53 * hash) + getClientID();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static protos.Batch.ClientBalanceQuery parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static protos.Batch.ClientBalanceQuery parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static protos.Batch.ClientBalanceQuery parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static protos.Batch.ClientBalanceQuery parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static protos.Batch.ClientBalanceQuery parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static protos.Batch.ClientBalanceQuery parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static protos.Batch.ClientBalanceQuery parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static protos.Batch.ClientBalanceQuery parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static protos.Batch.ClientBalanceQuery parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static protos.Batch.ClientBalanceQuery parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static protos.Batch.ClientBalanceQuery parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static protos.Batch.ClientBalanceQuery parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(protos.Batch.ClientBalanceQuery prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code protos.ClientBalanceQuery}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:protos.ClientBalanceQuery)
+        protos.Batch.ClientBalanceQueryOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return protos.Batch.internal_static_protos_ClientBalanceQuery_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return protos.Batch.internal_static_protos_ClientBalanceQuery_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                protos.Batch.ClientBalanceQuery.class, protos.Batch.ClientBalanceQuery.Builder.class);
+      }
+
+      // Construct using protos.Batch.ClientBalanceQuery.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        clientID_ = 0;
+
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return protos.Batch.internal_static_protos_ClientBalanceQuery_descriptor;
+      }
+
+      public protos.Batch.ClientBalanceQuery getDefaultInstanceForType() {
+        return protos.Batch.ClientBalanceQuery.getDefaultInstance();
+      }
+
+      public protos.Batch.ClientBalanceQuery build() {
+        protos.Batch.ClientBalanceQuery result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public protos.Batch.ClientBalanceQuery buildPartial() {
+        protos.Batch.ClientBalanceQuery result = new protos.Batch.ClientBalanceQuery(this);
+        result.clientID_ = clientID_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof protos.Batch.ClientBalanceQuery) {
+          return mergeFrom((protos.Batch.ClientBalanceQuery)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(protos.Batch.ClientBalanceQuery other) {
+        if (other == protos.Batch.ClientBalanceQuery.getDefaultInstance()) return this;
+        if (other.getClientID() != 0) {
+          setClientID(other.getClientID());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        protos.Batch.ClientBalanceQuery parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (protos.Batch.ClientBalanceQuery) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private int clientID_ ;
+      /**
+       * <code>int32 clientID = 1;</code>
+       */
+      public int getClientID() {
+        return clientID_;
+      }
+      /**
+       * <code>int32 clientID = 1;</code>
+       */
+      public Builder setClientID(int value) {
+        
+        clientID_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 clientID = 1;</code>
+       */
+      public Builder clearClientID() {
+        
+        clientID_ = 0;
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:protos.ClientBalanceQuery)
+    }
+
+    // @@protoc_insertion_point(class_scope:protos.ClientBalanceQuery)
+    private static final protos.Batch.ClientBalanceQuery DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new protos.Batch.ClientBalanceQuery();
+    }
+
+    public static protos.Batch.ClientBalanceQuery getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ClientBalanceQuery>
+        PARSER = new com.google.protobuf.AbstractParser<ClientBalanceQuery>() {
+      public ClientBalanceQuery parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ClientBalanceQuery(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<ClientBalanceQuery> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ClientBalanceQuery> getParserForType() {
+      return PARSER;
+    }
+
+    public protos.Batch.ClientBalanceQuery getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface ClientBalanceResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:protos.ClientBalanceResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>int32 balance = 1;</code>
+     */
+    int getBalance();
+  }
+  /**
+   * Protobuf type {@code protos.ClientBalanceResponse}
+   */
+  public  static final class ClientBalanceResponse extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:protos.ClientBalanceResponse)
+      ClientBalanceResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use ClientBalanceResponse.newBuilder() to construct.
+    private ClientBalanceResponse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private ClientBalanceResponse() {
+      balance_ = 0;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private ClientBalanceResponse(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+
+              balance_ = input.readInt32();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return protos.Batch.internal_static_protos_ClientBalanceResponse_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return protos.Batch.internal_static_protos_ClientBalanceResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              protos.Batch.ClientBalanceResponse.class, protos.Batch.ClientBalanceResponse.Builder.class);
+    }
+
+    public static final int BALANCE_FIELD_NUMBER = 1;
+    private int balance_;
+    /**
+     * <code>int32 balance = 1;</code>
+     */
+    public int getBalance() {
+      return balance_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (balance_ != 0) {
+        output.writeInt32(1, balance_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (balance_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, balance_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof protos.Batch.ClientBalanceResponse)) {
+        return super.equals(obj);
+      }
+      protos.Batch.ClientBalanceResponse other = (protos.Batch.ClientBalanceResponse) obj;
+
+      boolean result = true;
+      result = result && (getBalance()
+          == other.getBalance());
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + BALANCE_FIELD_NUMBER;
+      hash = (53 * hash) + getBalance();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static protos.Batch.ClientBalanceResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static protos.Batch.ClientBalanceResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static protos.Batch.ClientBalanceResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static protos.Batch.ClientBalanceResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static protos.Batch.ClientBalanceResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static protos.Batch.ClientBalanceResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static protos.Batch.ClientBalanceResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static protos.Batch.ClientBalanceResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static protos.Batch.ClientBalanceResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static protos.Batch.ClientBalanceResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static protos.Batch.ClientBalanceResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static protos.Batch.ClientBalanceResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(protos.Batch.ClientBalanceResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code protos.ClientBalanceResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:protos.ClientBalanceResponse)
+        protos.Batch.ClientBalanceResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return protos.Batch.internal_static_protos_ClientBalanceResponse_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return protos.Batch.internal_static_protos_ClientBalanceResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                protos.Batch.ClientBalanceResponse.class, protos.Batch.ClientBalanceResponse.Builder.class);
+      }
+
+      // Construct using protos.Batch.ClientBalanceResponse.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        balance_ = 0;
+
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return protos.Batch.internal_static_protos_ClientBalanceResponse_descriptor;
+      }
+
+      public protos.Batch.ClientBalanceResponse getDefaultInstanceForType() {
+        return protos.Batch.ClientBalanceResponse.getDefaultInstance();
+      }
+
+      public protos.Batch.ClientBalanceResponse build() {
+        protos.Batch.ClientBalanceResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public protos.Batch.ClientBalanceResponse buildPartial() {
+        protos.Batch.ClientBalanceResponse result = new protos.Batch.ClientBalanceResponse(this);
+        result.balance_ = balance_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof protos.Batch.ClientBalanceResponse) {
+          return mergeFrom((protos.Batch.ClientBalanceResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(protos.Batch.ClientBalanceResponse other) {
+        if (other == protos.Batch.ClientBalanceResponse.getDefaultInstance()) return this;
+        if (other.getBalance() != 0) {
+          setBalance(other.getBalance());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        protos.Batch.ClientBalanceResponse parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (protos.Batch.ClientBalanceResponse) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private int balance_ ;
+      /**
+       * <code>int32 balance = 1;</code>
+       */
+      public int getBalance() {
+        return balance_;
+      }
+      /**
+       * <code>int32 balance = 1;</code>
+       */
+      public Builder setBalance(int value) {
+        
+        balance_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 balance = 1;</code>
+       */
+      public Builder clearBalance() {
+        
+        balance_ = 0;
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:protos.ClientBalanceResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:protos.ClientBalanceResponse)
+    private static final protos.Batch.ClientBalanceResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new protos.Batch.ClientBalanceResponse();
+    }
+
+    public static protos.Batch.ClientBalanceResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ClientBalanceResponse>
+        PARSER = new com.google.protobuf.AbstractParser<ClientBalanceResponse>() {
+      public ClientBalanceResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ClientBalanceResponse(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<ClientBalanceResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ClientBalanceResponse> getParserForType() {
+      return PARSER;
+    }
+
+    public protos.Batch.ClientBalanceResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_protos_TransactionBatch_descriptor;
   private static final 
@@ -1487,6 +2452,16 @@ public final class Batch {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_protos_TransactionBatch_Transaction_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_protos_ClientBalanceQuery_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_protos_ClientBalanceQuery_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_protos_ClientBalanceResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_protos_ClientBalanceResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -1497,14 +2472,22 @@ public final class Batch {
   static {
     java.lang.String[] descriptorData = {
       "\n\013batch.proto\022\006protos\032\033google/protobuf/e" +
-      "mpty.proto\"\303\001\n\020TransactionBatch\022\017\n\007batch" +
-      "ID\030\001 \001(\005\022\020\n\010senderID\030\002 \001(\005\022:\n\014transactio" +
-      "ns\030\003 \003(\0132$.protos.TransactionBatch.Trans" +
-      "action\032P\n\013Transaction\022\025\n\rtransactionID\030\001" +
-      " \001(\005\022\025\n\raccountNumber\030\002 \001(\005\022\023\n\013changeInS" +
-      "um\030\003 \001(\0052N\n\013BatchSender\022?\n\tSendBatch\022\030.p" +
-      "rotos.TransactionBatch\032\026.google.protobuf" +
-      ".Empty\"\000b\006proto3"
+      "mpty.proto\032\034google/api/annotations.proto" +
+      "\"\316\001\n\020TransactionBatch\022\017\n\007batchID\030\001 \001(\005\022\020" +
+      "\n\010senderID\030\002 \001(\005\022:\n\014transactions\030\003 \003(\0132$" +
+      ".protos.TransactionBatch.Transaction\032[\n\013" +
+      "Transaction\022\025\n\rtransactionID\030\001 \001(\005\022\025\n\rac" +
+      "countNumber\030\002 \001(\005\022\023\n\013changeInSum\030\003 \001(\005\022\t" +
+      "\n\001a\030\004 \001(\005\"&\n\022ClientBalanceQuery\022\020\n\010clien" +
+      "tID\030\001 \001(\005\"(\n\025ClientBalanceResponse\022\017\n\007ba" +
+      "lance\030\001 \001(\0052N\n\013BatchSender\022?\n\tSendBatch\022" +
+      "\030.protos.TransactionBatch\032\026.google.proto" +
+      "buf.Empty\"\0002\310\001\n\023ClientRESTInterface\022g\n\ng" +
+      "etBalance\022\032.protos.ClientBalanceQuery\032\035." +
+      "protos.ClientBalanceResponse\"\036\202\323\344\223\002\030\022\026/v" +
+      "1/payload/{clientID}\022H\n\004Ping\022\026.google.pr" +
+      "otobuf.Empty\032\026.google.protobuf.Empty\"\020\202\323" +
+      "\344\223\002\n\022\010/v1/pingb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -1518,6 +2501,7 @@ public final class Batch {
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           com.google.protobuf.EmptyProto.getDescriptor(),
+          com.google.api.AnnotationsProto.getDescriptor(),
         }, assigner);
     internal_static_protos_TransactionBatch_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -1530,8 +2514,26 @@ public final class Batch {
     internal_static_protos_TransactionBatch_Transaction_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_protos_TransactionBatch_Transaction_descriptor,
-        new java.lang.String[] { "TransactionID", "AccountNumber", "ChangeInSum", });
+        new java.lang.String[] { "TransactionID", "AccountNumber", "ChangeInSum", "A", });
+    internal_static_protos_ClientBalanceQuery_descriptor =
+      getDescriptor().getMessageTypes().get(1);
+    internal_static_protos_ClientBalanceQuery_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_protos_ClientBalanceQuery_descriptor,
+        new java.lang.String[] { "ClientID", });
+    internal_static_protos_ClientBalanceResponse_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_protos_ClientBalanceResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_protos_ClientBalanceResponse_descriptor,
+        new java.lang.String[] { "Balance", });
+    com.google.protobuf.ExtensionRegistry registry =
+        com.google.protobuf.ExtensionRegistry.newInstance();
+    registry.add(com.google.api.AnnotationsProto.http);
+    com.google.protobuf.Descriptors.FileDescriptor
+        .internalUpdateFileDescriptor(descriptor, registry);
     com.google.protobuf.EmptyProto.getDescriptor();
+    com.google.api.AnnotationsProto.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

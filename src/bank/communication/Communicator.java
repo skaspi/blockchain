@@ -4,6 +4,7 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import protos.Batch;
 import protos.BatchSenderGrpc;
+import protos.ClientRESTInterfaceGrpc;
 
 import java.util.List;
 
