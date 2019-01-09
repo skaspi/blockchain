@@ -65,6 +65,7 @@ public class Server implements Watcher {
     private BatchReceiver receiver;
     private int batch_counter = 0;
     private int running_block = 0;
+    private int transaction_counter = 0;
     private int transactionsInCurrentBlock = 0;
 
     private Stat state = new Stat();
@@ -126,6 +127,7 @@ public class Server implements Watcher {
         if(!db.tryUpdateBatch(clientID, changeBalance)){
             return;
         }
+        transaction_counter++;
         transactionsInCurrentBlock++;
         batchTimer.cancel();
         batchTimer = new Timer("batchTimer");
