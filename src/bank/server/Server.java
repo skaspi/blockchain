@@ -65,7 +65,6 @@ public class Server implements Watcher {
     private BatchReceiver receiver;
     private int batch_counter = 0;
     private int running_block = 0;
-    private int transaction_counter = 0;
     private int transactionsInCurrentBlock = 0;
 
     private Stat state = new Stat();
@@ -127,7 +126,6 @@ public class Server implements Watcher {
         if(!db.tryUpdateBatch(clientID, changeBalance)){
             return;
         }
-        transaction_counter++;
         transactionsInCurrentBlock++;
         batchTimer.cancel();
         batchTimer = new Timer("batchTimer");
@@ -202,7 +200,7 @@ public class Server implements Watcher {
                 if (testAndUpdate(t.getClientID(), t.getBalanceChange())) {
                     final_chain.add(new Transaction(running_block++, t.getBalanceChange(), t.getClientID()));
                     flag = true;
-                    System.out.println(final_chain);
+                    System.out.println("Blockchain:" + final_chain);
                 }
             }
         }
@@ -251,4 +249,6 @@ public class Server implements Watcher {
             }
         }
     }
+
+    public int queryAmount(int id){return db.query_amount(id);}
 }
